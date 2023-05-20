@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AdController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -14,10 +16,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', [AdController::class,'index'])->name('home');
+Route::get('/table',function(){
+    return view('tables');
 });
-
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -29,3 +31,15 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+Route::get('/', [AdController::class,'index'])->name('home');
+Route::get('/table',function(){
+    return view('tables');
+});
+
+Route::get('/form',[AdController::class,'create'])->name('ads.forms');
+Route::post('/form',[AdController::class,'store'])->name('ads.store');
+Route::get('/category',[CategoryController::class,'create'])->name('category.create');
+Route::post('/category',[CategoryController::class,'store'])->name('category.store');
+Route::get('/category/{category:id}',[AdController::class,'byCategory'])->name('by-category');
+Route::get('/{ad:name}',[AdController::class,'show'])->name('view');
