@@ -8,6 +8,7 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
@@ -26,12 +27,19 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
+        if(auth()->user()->active){
 
-        $request->session()->regenerate();
+            $request->session()->regenerate();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+            if (auth()->user()->is_admin) {
+                return redirect()->intended(RouteServiceProvider::ADMIN);
+            } else {
+                return redirect()->intended(RouteServiceProvider::HOME);
+            }
+        }else{
+            return redirect('/')->with(Auth::logout());
+        }
     }
-
     /**
      * Destroy an authenticated session.
      */

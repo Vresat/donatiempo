@@ -21,8 +21,8 @@ class AdFactory extends Factory
             'body'=>fake()->realText(3000),
             'city'=>fake()->realText(10),
             'active'=> true,
-            'user_id'=>random_int(1,2),
-            'category_id'=>random_int(1,3)
+            'user_id'=>random_int(1,4),
+            'category_id'=>random_int(1,5)
         ];
     }
 }

@@ -39,14 +39,20 @@
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
 
-        <div class="flex items-center justify-end mt-4">
+        <div class="flex flex-col items-center justify-end mt-4">
+            <div>
+                <x-privacidad/>
+            </div>
             <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
-                {{ __('Already registered?') }}
+                {{ __('Ya estas registrado?') }}
             </a>
-
-            <x-primary-button class="ml-4">
-                {{ __('Register') }}
+            <div x-data="{open:false}" >
+            <x-primary-button class="ml-4" x-show="open">
+                {{ __('Registrarse') }}
             </x-primary-button>
+            <label class="mx-3"><input x-cloak @click="open=!open" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" type="checkbox" name="privacy">{{ __('Aceptar politica de privacidad') }}</label>
+            
+            </div>
         </div>
     </form>
 </x-guest-layout>

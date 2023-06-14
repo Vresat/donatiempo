@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dona Tiempo - {{ $title ?? ''}}</title>
+    <title>Dona Tiempo - {{ $title }}</title>
     <meta name="author" content="Vicente Anton">
-    <meta name="description" content="{{ $metaDescription ?? 'Anuncios'}}">
+    <meta name="description" content="{{ $metaDescription }}">
 
 
     <style>
@@ -31,119 +31,32 @@
                 Dona Tiempo
             </a>
             <p class="text-lg text-gray-600">
-                Lorem Ipsum Dolor Sit Amet
+                Web de servicios colaborativos
             </p>
         </div>
     </header>
-
-    <!-- Topic Nav -->
-    <nav class="w-full py-4 border-t border-b bg-gray-100" x-data="{ open: false }">
-        <div class="block sm:hidden">
-            <a href="#" class="block md:hidden text-base font-bold uppercase text-center flex justify-center items-center" @click="open = !open">
-                Topics <i :class="open ? 'fa-chevron-down': 'fa-chevron-up'" class="fas ml-2"></i>
-            </a>
-        </div>
-
-        <div :class="open ? 'block': 'hidden'" class="w-full flex-grow sm:flex sm:items-center sm:w-auto">
-            <div class="w-full container mx-auto flex flex-col sm:flex-row items-center justify-between text-sm font-bold uppercase mt-0 px-6 py-2">
-                <div>
-                <a href="{{route('home')}}" class="hover:bg-gray-400 rounded py-2 px-4 mx-2">Inicio</a>
-                    @foreach($categories as $category)
-                    <a href="#" class="hover:bg-gray-400 rounded py-2 px-4 mx-2">{{$category->name}}</a>
-                    @endforeach
-                    <a href="#" class="hover:bg-gray-400 rounded py-2 px-4 mx-2">A cerca de</a>
-                </div>
-                <div>
-                    @auth
-                    <!-- Settings Dropdown -->
-                    <div class="hidden sm:flex sm:items-center sm:ml-6">
-                        <x-dropdown align="right" width="48">
-                            <x-slot name="trigger">
-                                <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-bold rounded-md text-blue-800 bg-blue hover:bg-blue-800 hover:text-white focus:outline-none transition ease-in-out duration-150">
-                                    <div>{{ Auth::user()->name }}</div>
-
-                                    <div class="ml-1">
-                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                        </svg>
-                                    </div>
-                                </button>
-                            </x-slot>
-
-                            <x-slot name="content">
-                            <x-dropdown-link :href="route('ads.forms')">
-                                    {{ __('Crear Anuncio') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link :href="route('profile.edit')">
-                                    {{ __('Profile') }}
-                                </x-dropdown-link>
-
-                                <!-- Authentication -->
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-
-                                    <x-dropdown-link :href="route('logout')" onclick="event.preventDefault();
-                                                this.closest('form').submit();">
-                                        {{ __('Log Out') }}
-                                    </x-dropdown-link>
-                                </form>
-                            </x-slot>
-                        </x-dropdown>
-                    </div>
-                </div>
-                <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
-                    <div class="pt-2 pb-3 space-y-1">
-                        <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                            {{ __('Dashboard') }}
-                        </x-responsive-nav-link>
-                    </div>
-
-                    <!-- Responsive Settings Options -->
-                    <div class="pt-4 pb-1 border-t border-gray-200">
-                        <div class="px-4">
-                            <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-                            <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
-                        </div>
-
-                        <div class="mt-3 space-y-1">
-                            <x-responsive-nav-link :href="route('profile.edit')">
-                                {{ __('Profile') }}
-                            </x-responsive-nav-link>
-
-                            <!-- Authentication -->
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-
-                                <x-responsive-nav-link :href="route('logout')" onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                                    {{ __('Log Out') }}
-                                </x-responsive-nav-link>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                @else
-                <a href="{{route('login')}}" class="hover:bg-gray-400 rounded py-2 px-4 mx-2">Login</a>
-                <a href="{{route('register')}}" class="bg-blue-400 text-white rounded py-2 px-4 mx-2">Register</a>
-                @endauth
-            </div>
-        </div>
-        </div>
-    </nav>
-
-
+    @if(session('status'))
+    <div x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)" class="w-full pl-3 py-1 bg-green-200 text-white">
+        {{session('status')}}
+    </div>
+    @endif
+    @if(isset($title) && $title!='Errores')
+    <x-partials.navigation :$categories :$notification :$cities />
+    @endif
     <div class="container mx-auto flex flex-wrap py-6">
 
+
         {{ $slot }}
-
-
-    <x-sidebar></x-sidebar>
+        @if(isset($title) && $title!='Errores')
+        @if(!str_contains(Request::fullUrl(),'/profile'))
+        <x-sidebar />
+        @endif
+        @endif
 
     </div>
-
     <footer class="w-full border-t bg-white pb-12">
         <div class="w-full container mx-auto flex flex-col items-center">
-            <div class="uppercase py-6">&copy; myblog.com</div>
+            <div class="uppercase py-6">&copy; DonaTiempo.es</div>
         </div>
     </footer>
 

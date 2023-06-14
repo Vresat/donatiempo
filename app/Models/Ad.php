@@ -25,6 +25,10 @@ class Ad extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function chatAds(){
+        return $this->hasMany(ChatAd::class,'ad_id','id');
+    }
+
     public function shortBody():string{
         return Str::words(strip_tags($this->body),4);
     }

@@ -14,14 +14,18 @@ class Sidebar extends Component
      */
     public function render()
     {
-        $categories= DB::table('categories')
-                    ->select('categories.name','categories.id')
+        try{
+        $categories= Category::query()
+                    ->select('categories.id','categories.name')
+                    ->where('categories.active','1')
                     ->join('ads','ads.category_id','=','categories.id')
                     ->selectRaw('categories.name, COUNT(*) AS total')
                     ->groupBy('categories.id','categories.name')
                     ->orderByDesc('total')
                     ->get();
-
+        }catch(\Exception $e){
+            abort(404);
+        }        
         return view('components.sidebar',compact('categories'));
     }
 }
